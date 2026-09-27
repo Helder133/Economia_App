@@ -1,0 +1,72 @@
+@if (cargando()) {
+<div>Calculando rendimientos...</div>
+}
+
+@if (!cargando() && resumen(); as data) {
+<div class="dashboard-container">
+    <h2>Resumen del Portafolio</h2>
+    <p>Periodo: {{ data.periodo.inicio }} al {{ data.periodo.fin }}</p>
+
+    <!-- Tarjetas del Millón de Dólares -->
+    <div class="resumen-global">
+        <div class="tarjeta">
+            <h3>Capital Inicial</h3>
+            <p>{{ data.cuentaGlobal.capitalInicial | currency:'USD' }}</p>
+        </div>
+        <div class="tarjeta">
+            <h3>Efectivo sin Invertir</h3>
+            <p>{{ data.cuentaGlobal.efectivoSobrante | currency:'USD' }}</p>
+        </div>
+        <div class="tarjeta">
+            <h3>Valor Final del Portafolio</h3>
+            <p>{{ data.cuentaGlobal.valorFinalTotalPortafolio | currency:'USD' }}</p>
+        </div>
+        <div class="tarjeta" [ngClass]="data.cuentaGlobal.rendimientoNetoDinero >= 0 ? 'ganancia' : 'perdida'">
+            <h3>Rendimiento Global</h3>
+            <p>
+                {{ data.cuentaGlobal.rendimientoNetoDinero >= 0 ? '+' : '' }}
+                {{ data.cuentaGlobal.rendimientoNetoDinero | currency:'USD' }}
+                ({{ data.cuentaGlobal.rendimientoNetoPorcentaje | number:'1.2-2' }}%)
+            </p>
+        </div>
+    </div>
+
+    <!-- Tabla de Acciones Compradas -->
+    <h3>Desglose de Inversiones</h3>
+    <table border="1" cellpadding="10">
+        <thead>
+            <tr>
+                <th>Empresa (Ticker)</th>
+                <th>Acciones</th>
+                <th>Precio Compra</th>
+                <th>Precio Actual</th>
+                <th>Total Invertido</th>
+                <th>Ganancia/Pérdida ($)</th>
+                <th>Rendimiento (%)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- @for exige la propiedad 'track' para optimizar la reconstrucción del DOM -->
+            @for (inv of data.resumenIndividual; track inv.ticker) {
+            <tr>
+                <td>{{ inv.empresa }} ({{ inv.ticker }})</td>
+                <td>{{ inv.cantidad }}</td>
+                <td>{{ inv.precioCompra | currency:'USD' }}</td>
+                <td>{{ inv.precioActual | currency:'USD' }}</td>
+                <td>{{ inv.costoTotalCompra | currency:'USD' }}</td>
+                <td [ngClass]="inv.gananciaPerdidaDinero >= 0 ? 'text-success' : 'text-danger'">
+                    {{ inv.gananciaPerdidaDinero | currency:'USD' }}
+                </td>
+                <td [ngClass]="inv.gananciaPerdidaPorcentaje >= 0 ? 'text-success' : 'text-danger'">
+                    {{ inv.gananciaPerdidaPorcentaje | number:'1.2-2' }}%
+                </td>
+            </tr>
+            } @empty {
+            <tr>
+                <td colspan="7">No hay inversiones registradas en este portafolio.</td>
+            </tr>
+            }
+        </tbody>
+    </table>
+</div>
+}
