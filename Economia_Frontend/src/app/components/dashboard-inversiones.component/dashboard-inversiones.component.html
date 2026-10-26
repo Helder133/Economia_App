@@ -1,28 +1,74 @@
+<form [formGroup]="formulario" (ngSubmit)="calcularPortafolio()" class="form-container">
+    <div class="form-row">
+        <label>Capital Global ($):</label>
+        <input type="number" formControlName="capitalInicialGlobal">
+
+        <label>Fecha de Compra:</label>
+        <input type="date" formControlName="fechaCompra">
+
+        <label>Fecha de Revisión:</label>
+        <input type="date" formControlName="fechaRevision">
+    </div>
+
+    <h3>Activos</h3>
+    <div formArrayName="inversiones">
+        @for (inv of inversionesArray.controls; track $index) {
+        <div [formGroupName]="$index" class="inversion-row">
+            <input type="text" formControlName="empresa" placeholder="Empresa (Ej. Apple)">
+            <input type="text" formControlName="ticker" placeholder="Ticker (Ej. AAPL)">
+            <input type="number" formControlName="cantidad" placeholder="Cantidad de acciones">
+            <!-- Botón con la clase btn-eliminar -->
+            <button type="button" class="btn-eliminar" (click)="removerInversion($index)">Eliminar</button>
+        </div>
+        }
+    </div>
+
+    <!-- Contenedor para los botones de acción -->
+    <div class="acciones-formulario">
+        <button type="button" class="btn-agregar" (click)="agregarInversion()">+ Agregar otra empresa</button>
+        <button type="submit" class="btn-submit" [disabled]="formulario.invalid">Calcular Rendimiento</button>
+    </div>
+</form>
+
+@if (mensajeError()) {
+<div class="alert-error">
+    ⚠️ {{ mensajeError() }}
+</div>
+}
+
 @if (cargando()) {
-<div>Calculando rendimientos...</div>
+<div>Procesando datos del mercado...</div>
 }
 
 @if (!cargando() && resumen(); as data) {
 <div class="dashboard-container">
-    <h2>Resumen del Portafolio</h2>
-    <p>Periodo: {{ data.periodo.inicio }} al {{ data.periodo.fin }}</p>
 
-    <!-- Tarjetas del Millón de Dólares -->
+    <!-- Gráfica -->
+    <h2>Evolución del Portafolio</h2>
+    <div style="display: block; width: 100%; height: 400px; margin-bottom: 30px;">
+        <canvas baseChart [data]="lineChartData" [options]="lineChartOptions" [type]="'line'">
+        </canvas>
+    </div>
+
+    <!-- Tarjetas de Resumen Global -->
+    <h2>Resumen del Portafolio</h2>
+    <p>Periodo analizado: {{ data.periodo.inicio }} al {{ data.periodo.fin }}</p>
+
     <div class="resumen-global">
         <div class="tarjeta">
             <h3>Capital Inicial</h3>
             <p>{{ data.cuentaGlobal.capitalInicial | currency:'USD' }}</p>
         </div>
         <div class="tarjeta">
-            <h3>Efectivo sin Invertir</h3>
+            <h3>Efectivo Disponible</h3>
             <p>{{ data.cuentaGlobal.efectivoSobrante | currency:'USD' }}</p>
         </div>
         <div class="tarjeta">
-            <h3>Valor Final del Portafolio</h3>
+            <h3>Valor Final (Acciones + Efectivo)</h3>
             <p>{{ data.cuentaGlobal.valorFinalTotalPortafolio | currency:'USD' }}</p>
         </div>
         <div class="tarjeta" [ngClass]="data.cuentaGlobal.rendimientoNetoDinero >= 0 ? 'ganancia' : 'perdida'">
-            <h3>Rendimiento Global</h3>
+            <h3>Rendimiento Neto</h3>
             <p>
                 {{ data.cuentaGlobal.rendimientoNetoDinero >= 0 ? '+' : '' }}
                 {{ data.cuentaGlobal.rendimientoNetoDinero | currency:'USD' }}
@@ -31,7 +77,36 @@
         </div>
     </div>
 
-    <!-- Tabla de Acciones Compradas -->
+    <!-- Tarjetas de Estadísticas Destacadas -->
+    <h3>Estadísticas Destacadas</h3>
+    <div class="resumen-global">
+        <div class="tarjeta ganancia">
+            <h3>Mejor Acción</h3>
+            <p>{{ data.estadisticasActivos.mejorAccion.ticker }}</p>
+            <span class="text-success">+{{ data.estadisticasActivos.mejorAccion.gananciaPorcentaje | number:'1.2-2' }}%
+                ({{ data.estadisticasActivos.mejorAccion.gananciaDinero | currency:'USD' }})</span>
+        </div>
+        <div class="tarjeta perdida">
+            <h3>Peor Acción</h3>
+            <p>{{ data.estadisticasActivos.peorAccion.ticker }}</p>
+            <span class="text-danger">{{ data.estadisticasActivos.peorAccion.gananciaPorcentaje | number:'1.2-2' }}% ({{
+                data.estadisticasActivos.peorAccion.gananciaDinero | currency:'USD' }})</span>
+        </div>
+        <div class="tarjeta ganancia">
+            <h3>Día de Mayor Subida</h3>
+            <p>{{ data.estadisticasActivos.rendimientoDiario.mejorDia.fecha }}</p>
+            <span class="text-success">+{{ data.estadisticasActivos.rendimientoDiario.mejorDia.porcentaje |
+                number:'1.2-2' }}% en el portafolio</span>
+        </div>
+        <div class="tarjeta perdida">
+            <h3>Día de Mayor Caída</h3>
+            <p>{{ data.estadisticasActivos.rendimientoDiario.peorDia.fecha }}</p>
+            <span class="text-danger">{{ data.estadisticasActivos.rendimientoDiario.peorDia.porcentaje | number:'1.2-2'
+                }}% en el portafolio</span>
+        </div>
+    </div>
+
+    <!-- Tabla de Inversiones -->
     <h3>Desglose de Inversiones</h3>
     <table border="1" cellpadding="10">
         <thead>
@@ -46,7 +121,6 @@
             </tr>
         </thead>
         <tbody>
-            <!-- @for exige la propiedad 'track' para optimizar la reconstrucción del DOM -->
             @for (inv of data.resumenIndividual; track inv.ticker) {
             <tr>
                 <td>{{ inv.empresa }} ({{ inv.ticker }})</td>
@@ -63,7 +137,7 @@
             </tr>
             } @empty {
             <tr>
-                <td colspan="7">No hay inversiones registradas en este portafolio.</td>
+                <td colspan="7">No hay inversiones registradas.</td>
             </tr>
             }
         </tbody>

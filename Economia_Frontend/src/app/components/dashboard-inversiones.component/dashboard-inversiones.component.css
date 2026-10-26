@@ -1,30 +1,105 @@
-/* Contenedor principal */
-.dashboard-container {
+/* Contenedor principal (Tema Oscuro) */
+.dashboard-container,
+.form-container {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     max-width: 1200px;
     margin: 20px auto;
     padding: 20px;
-    background-color: #f8f9fa;
+    background-color: #121212;
+    /* Fondo oscuro principal */
     border-radius: 12px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    color: #e0e0e0;
 }
 
-h2 {
-    color: #2c3e50;
-    margin-bottom: 5px;
-}
-
-p {
-    color: #6c757d;
-    margin-bottom: 25px;
-}
-
+h2,
 h3 {
-    color: #34495e;
+    color: #ffffff;
     margin-bottom: 15px;
 }
 
-/* Sistema de Grid para las tarjetas del millón de dólares */
+p {
+    color: #a0a0a0;
+    margin-bottom: 25px;
+}
+
+/* Formularios */
+.form-row,
+.inversion-row {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 15px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+input {
+    background-color: #1e1e1e;
+    border: 1px solid #333;
+    color: #fff;
+    padding: 10px;
+    border-radius: 6px;
+    flex: 1;
+}
+
+input:focus {
+    outline: none;
+    border-color: #007bff;
+}
+
+.btn-submit {
+    background-color: #007bff;
+    /* Azul */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.btn-submit:disabled {
+    background-color: #444;
+    color: #888;
+    cursor: not-allowed;
+}
+
+.btn-eliminar {
+    background-color: #dc3545;
+    /* Rojo */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.btn-eliminar:hover {
+    background-color: #c82333;
+}
+
+.btn-agregar {
+    background-color: #28a745;
+    /* Verde */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.btn-agregar:hover {
+    background-color: #218838;
+}
+
+.acciones-formulario {
+    display: flex;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+/* Sistema de Grid para las tarjetas */
 .resumen-global {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -34,24 +109,24 @@ h3 {
 
 /* Diseño individual de las tarjetas */
 .tarjeta {
-    background-color: #ffffff;
+    background-color: #1e1e1e;
+    /* Fondo oscuro de tarjeta */
     padding: 25px 20px;
     border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
     text-align: center;
     border-top: 5px solid #007bff;
-    /* Azul por defecto */
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .tarjeta:hover {
     transform: translateY(-5px);
-    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.6);
 }
 
 .tarjeta h3 {
     font-size: 1rem;
-    color: #8391a2;
+    color: #a0a0a0;
     margin-bottom: 10px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -60,48 +135,50 @@ h3 {
 .tarjeta p {
     font-size: 1.8rem;
     font-weight: bold;
-    color: #2b3d51;
+    color: #ffffff;
     margin: 0;
 }
 
 /* Modificadores condicionales para Rendimiento Global */
 .tarjeta.ganancia {
-    border-top-color: #28a745;
+    border-top-color: #4ade80;
+    /* Verde más brillante para contraste en oscuro */
 }
 
 .tarjeta.ganancia p {
-    color: #28a745;
+    color: #4ade80;
 }
 
 .tarjeta.perdida {
-    border-top-color: #dc3545;
+    border-top-color: #f87171;
+    /* Rojo más brillante para contraste en oscuro */
 }
 
 .tarjeta.perdida p {
-    color: #dc3545;
+    color: #f87171;
 }
 
 /* Estilos de la tabla de acciones */
 table {
     width: 100%;
     border-collapse: collapse;
-    background-color: #ffffff;
+    background-color: #1e1e1e;
     border-radius: 10px;
     overflow: hidden;
-    /* Mantiene los bordes redondeados */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    color: #e0e0e0;
 }
 
 th,
 td {
     padding: 16px;
     text-align: left;
-    border-bottom: 1px solid #e9ecef;
+    border-bottom: 1px solid #333333;
 }
 
 th {
-    background-color: #f1f3f5;
-    color: #495057;
+    background-color: #121212;
+    color: #a0a0a0;
     font-weight: 600;
     text-transform: uppercase;
     font-size: 0.85rem;
@@ -113,16 +190,28 @@ tr:last-child td {
 }
 
 tr:hover {
-    background-color: #f8f9fa;
+    background-color: #2a2a2a;
 }
 
 /* Clases dinámicas de texto para Angular [ngClass] */
 .text-success {
-    color: #28a745;
+    color: #4ade80;
     font-weight: bold;
 }
 
 .text-danger {
-    color: #dc3545;
+    color: #f87171;
     font-weight: bold;
+}
+
+.alert-error {
+    background-color: rgba(248, 113, 113, 0.1);
+    color: #f87171;
+    border: 1px solid #f87171;
+    padding: 15px;
+    border-radius: 8px;
+    margin: 20px auto;
+    max-width: 1200px;
+    font-weight: bold;
+    text-align: center;
 }
