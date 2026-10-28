@@ -27,10 +27,11 @@ export class DashboardInversionesComponent {
   constructor(private fb: FormBuilder, private portafolioService: PortafolioService) {
     this.formulario = this.fb.group({
       fechaCompra: ['2026-07-31', Validators.required],
-      fechaRevision: ['2026-10-23', Validators.required],
+      fechaRevision: ['2026-10-26', Validators.required],
       capitalInicialGlobal: [1000005, [Validators.required, Validators.min(1)]],
       inversiones: this.fb.array([
         // Inversiones iniciales 
+        /*
         this.crearInversionFormGroup('U.S. Oil Fund', 'USO', 387.09),
         this.crearInversionFormGroup('Global X Uranium', 'URA', 4095.21),
         this.crearInversionFormGroup('Invesco Australian Dollar', 'FXA', 1434.10),
@@ -41,7 +42,7 @@ export class DashboardInversionesComponent {
         this.crearInversionFormGroup('Ishares Short Treasury Bond', 'SHV', 905.80),
         this.crearInversionFormGroup('Walmart', 'WMT', 1079.14),
         this.crearInversionFormGroup('Johnson & Johnson', 'JNJ', 468.11)
-        
+        */
 
         // 1. PROPUESTA DEFENSIVA
         /*
@@ -58,7 +59,7 @@ export class DashboardInversionesComponent {
         */
 
         // 2. PROPUESTA AGRESIVA
-        /*
+        
         this.crearInversionFormGroup('U.S. Oil Fund', 'USO', 774.22),
         this.crearInversionFormGroup('Global X Uranium', 'URA', 2559.50),
         this.crearInversionFormGroup('Invesco Australian Dollar', 'FXA', 1434.10),
@@ -69,7 +70,7 @@ export class DashboardInversionesComponent {
         this.crearInversionFormGroup('Palantir', 'PLTR', 812.60),
         this.crearInversionFormGroup('Coinbase', 'COIN', 683.71),
         this.crearInversionFormGroup('Super Micro Computer', 'SMCI', 3521.12)
-        */
+        
 
         
         // 3. PROPUESTA 40% RIESGO / 60% ESTABILIDAD (8.01%)

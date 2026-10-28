@@ -26,7 +26,6 @@ class PortfolioService {
 
                 // Extraer precios reales (el primer registro es la compra, el último la revisión)
                 const precioCompra = historial[0].close;
-                console.log('Precio real de', ticker, ':', precioCompra);
                 const precioActual = historial[historial.length - 1].close;
 
                 const costoTotalCompra = cantidad * precioCompra;
